@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐧 Counting Penguins — Activity 2</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; padding: 1.5rem; min-height: 100vh; font-family: Arial, sans-serif; background: #0c2340; color: #1a1a1a; }
+.container { max-width: 1200px; min-height: calc(100vh - 3rem); margin: auto; display: flex; flex-direction: column; overflow: hidden; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+.header, .footer { background: #0c2340; color: #fff; text-align: center; }
+.header { padding: 2rem; }
+.header h1 { margin: 0 0 .5rem; font-size: 2rem; }
+.subtitle { margin-bottom: 1rem; font-size: 1.1rem; }
+.branding { font-size: .875rem; font-weight: 700; letter-spacing: .05em; opacity: .8; }
+.progress-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; margin-top: 1.5rem; }
+.pill { padding: .5rem 1rem; border: 2px solid #ffd600; border-radius: 20px; color: #fff; font-size: .875rem; font-weight: 700; }
+.pill.completed { background: #ffd600; color: #0c2340; }
+.tabs { display: flex; overflow-x: auto; border-bottom: 2px solid #e0e0e0; background: #f5f5f5; }
+.tab-btn { flex: 1; min-width: 120px; padding: 1rem; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #666; font-weight: 700; cursor: pointer; }
+.tab-btn.active { border-bottom-color: #ffd600; background: #fff; color: #0c2340; }
+.content { flex: 1; overflow-y: auto; padding: 2rem; }
+.tab-pane { display: none; }
+.tab-pane.active { display: flex; flex-direction: column; gap: 1.25rem; }
+.instruction, .note, .calculator-directions { padding: 1rem; border-radius: 6px; line-height: 1.5; }
+.instruction, .note { border-left: 4px solid #0c2340; background: #f0f8ff; color: #0c2340; }
+.calculator-directions { border-left: 4px solid #ffd600; background: #fffdf0; }
+.grid-container { position: relative; width: max-content; margin: 2rem auto; }
+.helicopter { position: absolute; top: -2.5rem; right: -.5rem; z-index: 1; font-size: 2rem; pointer-events: none; }
+.grid { display: grid; grid-template-columns: repeat(10, 58px); grid-template-rows: repeat(10, 58px); gap: 2px; padding: .5rem; background: #e0e0e0; border-radius: 4px; }
+.grid-cell { position: relative; width: 58px; height: 58px; overflow: hidden; border: 1px solid #ddd; border-radius: 4px; background: #fff; cursor: pointer; }
+.grid-cell:hover { background: #f9f9f9; }
+.grid-cell.selected-convenience, .grid-cell.selected-srs, .grid-cell.selected-stratify-row { background: #ffd600; border-color: #9a8000; }
+.grid-cell.selected-stratify-col { background: #d4edda; border-color: #28a745; }
+.grid-cell.selected-cluster { background: #dcecff; border-color: #0c2340; }
+.penguin, .count-label { pointer-events: none; user-select: none; }
+.penguin { position: absolute; font-size: 1.25rem; }
+.count-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #0c2340; font-size: 1.25rem; font-weight: 700; opacity: 0; text-shadow: 0 0 4px #fff; }
+.grid-cell.selected .count-label { opacity: 1; }
+.grid-label { position: absolute; color: #0c2340; font-size: .875rem; font-weight: 700; pointer-events: none; }
+.row-label { left: -2rem; width: 1.5rem; height: 58px; display: flex; align-items: center; justify-content: center; }
+.col-label { top: -1.8rem; width: 58px; height: 1.5rem; display: flex; align-items: center; justify-content: center; }
+.stratum-bg-odd { background: #f0f8ff; }
+.stratum-bg-even { background: #fffdf0; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+.btn, .submit-btn { padding: .75rem 1.5rem; border: 0; border-radius: 6px; font-weight: 700; cursor: pointer; }
+.btn-primary, .submit-btn { background: #0c2340; color: #fff; }
+.btn-secondary { background: #e0e0e0; color: #0c2340; }
+.counter { color: #0c2340; font-weight: 700; }
+.number-input { width: 80px; padding: .5rem; border: 2px solid #0c2340; border-radius: 4px; font-size: 1rem; font-weight: 700; }
+.number-input::-webkit-outer-spin-button, .number-input::-webkit-inner-spin-button { margin: 0; -webkit-appearance: none; }
+.number-input[type=number] { -moz-appearance: textfield; }
+.table-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { padding: .75rem; background: #0c2340; color: #fff; text-align: left; }
+td { padding: .75rem; border-bottom: 1px solid #ddd; }
+.total-row { background: #f5f5f5; font-weight: 700; }
+.estimate-box { padding: 1.5rem; border-radius: 8px; background: #ffd600; color: #0c2340; text-align: center; font-size: 1.5rem; font-weight: 700; }
+.estimate-label { margin-bottom: .5rem; font-size: .875rem; opacity: .8; }
+.footer { padding: 1rem; font-size: .875rem; }
+@media (max-width: 768px) { body { padding: 0; } .container { min-height: 100vh; border-radius: 0; } .header h1 { font-size: 1.5rem; } .content { padding: 1rem; } }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+<header class="header"><h1>🐧 Counting Penguins — Activity 2</h1><div class="subtitle">Does where the penguins live affect your estimate?</div><div class="branding">Steve's AP Stats Lab</div><div class="progress-pills"><div class="pill" data-pill="convenience">Convenience</div><div class="pill" data-pill="srs">SRS</div><div class="pill" data-pill="stratify-col">Stratify by Column</div><div class="pill" data-pill="stratify-row">Stratify by Row</div><div class="pill" data-pill="cluster">Cluster</div></div></header>
+<nav class="tabs"><button class="tab-btn active" data-action="tab" data-tab="convenience">Convenience</button><button class="tab-btn" data-action="tab" data-tab="srs">SRS</button><button class="tab-btn" data-action="tab" data-tab="stratify-col">Stratify by Column</button><button class="tab-btn" data-action="tab" data-tab="stratify-row">Stratify by Row</button><button class="tab-btn" data-action="tab" data-tab="cluster">Cluster</button><button class="tab-btn" data-action="tab" data-tab="results">Results</button></nav>
+<main class="content">
+<section class="tab-pane active" data-tab-pane="convenience"><div class="instruction">Pick up to 10 cells that are convenient to the helicopter landing spot.</div><div class="grid-container"><div class="helicopter">🚁</div><div class="grid" id="grid-convenience"></div></div><div class="counter">Cells selected: <span id="convenience-count">0</span> / 10</div><div class="table-container"><table><thead><tr><th>Cell</th><th>Penguin Count</th></tr></thead><tbody id="convenience-table"></tbody></table></div><div id="convenience-estimate" hidden><div class="estimate-box"><div class="estimate-label">Your Estimate</div><div id="convenience-estimate-value">0</div></div></div><div class="controls"><button class="btn btn-secondary" data-action="reset" data-mode="convenience">Reset</button></div></section>
+<section class="tab-pane" data-tab-pane="srs"><div class="instruction">Use a random row and column for each of 10 unique cells. If you get a duplicate, re-roll.</div><div class="calculator-directions"><strong>TI-Nspire:</strong> Menu → 5: Probability → 4: Random → 2: Integer → randInt(1,10) for ROW, then again for COLUMN<br><strong>NumWorks:</strong> Calculation app → randint(1,10) for ROW, then again for COLUMN</div><div class="grid-container"><div class="grid" id="grid-srs"></div></div><div class="controls"><button class="btn btn-primary" data-action="generate-srs">Generate Random Cell</button><div class="counter">Cells selected: <span id="srs-count">0</span> / 10</div></div><div class="table-container"><table><thead><tr><th>Cell</th><th>Penguin Count</th></tr></thead><tbody id="srs-table"></tbody></table></div><div id="srs-estimate" hidden><div class="estimate-box"><div class="estimate-label">Your Estimate</div><div id="srs-estimate-value">0</div></div></div><div class="controls"><button class="btn btn-secondary" data-action="reset" data-mode="srs">Reset</button></div></section>
+<section class="tab-pane" data-tab-pane="stratify-col"><div class="instruction">There are 10 strata: one stratum per column. Use randInt(1,10) once per column to choose the ROW, then click that cell. A new choice in a column replaces the old one.</div><div class="grid-container"><div class="grid" id="grid-stratify-col"></div></div><div class="counter"><span id="stratify-col-count">0</span> of 10 columns sampled</div><div class="table-container"><table><thead><tr><th>Stratum (Column #)</th><th>Selection</th><th>Penguin Count</th></tr></thead><tbody id="stratify-col-table"></tbody></table></div><div id="stratify-col-estimate" hidden><div class="estimate-box"><div class="estimate-label">Your Estimate</div><div id="stratify-col-estimate-value">0</div></div></div><div class="controls"><button class="btn btn-secondary" data-action="reset" data-mode="stratify-col">Reset</button></div></section>
+<section class="tab-pane" data-tab-pane="stratify-row"><div class="instruction">There are 10 strata: one stratum per row. Use randInt(1,10) once per row to choose the COLUMN, then click that cell. A new choice in a row replaces the old one.</div><div class="grid-container"><div class="grid" id="grid-stratify-row"></div></div><div class="counter"><span id="stratify-row-count">0</span> of 10 rows sampled</div><div class="table-container"><table><thead><tr><th>Stratum (Row #)</th><th>Selection</th><th>Penguin Count</th></tr></thead><tbody id="stratify-row-table"></tbody></table></div><div id="stratify-row-estimate" hidden><div class="estimate-box"><div class="estimate-label">Your Estimate</div><div id="stratify-row-estimate-value">0</div></div></div><div class="controls"><button class="btn btn-secondary" data-action="reset" data-mode="stratify-row">Reset</button></div></section>
+<section class="tab-pane" data-tab-pane="cluster"><div class="instruction">Each row is one cluster. Enter a row number from 1–10. All 10 cells in that row will be counted.</div><div class="controls"><label for="cluster-input">Select Row:</label><input type="number" id="cluster-input" class="number-input" min="1" max="10" placeholder="1–10" data-action="cluster-input"></div><div class="grid-container"><div class="grid" id="grid-cluster"></div></div><div class="counter" id="cluster-status">Cluster selected: None</div><div class="table-container"><table><thead><tr><th>Cell</th><th>Penguin Count</th></tr></thead><tbody id="cluster-table"></tbody></table></div><div id="cluster-estimate" hidden><div class="estimate-box"><div class="estimate-label">Your Estimate</div><div id="cluster-estimate-value">0</div></div></div><div class="controls"><button class="btn btn-secondary" data-action="reset" data-mode="cluster">Reset</button></div></section>
+<section class="tab-pane" data-tab-pane="results"><div class="instruction">Compare your estimates with the true total of 480 penguins. Notice how the two stratification methods compare!</div><div class="table-container"><table><thead><tr><th>Method</th><th>Your Estimate</th><th>True Total (480)</th><th>Difference</th></tr></thead><tbody><tr><td>Convenience</td><td id="results-convenience">—</td><td>480</td><td id="results-convenience-diff">—</td></tr><tr><td>SRS</td><td id="results-srs">—</td><td>480</td><td id="results-srs-diff">—</td></tr><tr><td>Stratify by Column</td><td id="results-stratify-col">—</td><td>480</td><td id="results-stratify-col-diff">—</td></tr><tr><td>Stratify by Row</td><td id="results-stratify-row">—</td><td>480</td><td id="results-stratify-row-diff">—</td></tr><tr><td>Cluster</td><td id="results-cluster">—</td><td>480</td><td id="results-cluster-diff">—</td></tr></tbody></table></div><div class="note">Compare your two stratified estimates. Stratifying by column cuts across the density gradient — each column spans sparse to dense rows. Stratifying by row runs parallel to the gradient — each row is internally uniform. Which approach gave a better estimate? Why does the direction of stratification matter?</div><button class="submit-btn" data-action="submit">Submit My Results</button></section>
+</main><footer class="footer">© 2026 Steve's AP Stats Lab</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const app = document.getElementById('app');
+    const gridData = [[2,2,2,2,2,2,2,2,2,4],[2,2,2,2,2,2,2,2,2,4],[3,3,3,3,3,3,3,3,3,5],[3,3,3,3,3,3,3,3,3,5],[4,4,4,4,4,4,4,4,4,6],[4,4,4,4,4,4,4,4,4,6],[6,6,6,6,6,6,6,6,6,8],[6,6,6,6,6,6,6,6,6,8],[8,8,8,8,8,8,8,8,8,9],[8,8,8,8,8,8,8,8,8,9]];
+    const state = { convenience: new Set(), srs: new Set(), stratifyCol: new Map(), stratifyRow: new Map(), cluster: null, estimates: {} };
+    const gridIds = { convenience: 'grid-convenience', srs: 'grid-srs', 'stratify-col': 'grid-stratify-col', 'stratify-row': 'grid-stratify-row', cluster: 'grid-cluster' };
+    const modeStateKey = { convenience: 'convenience', srs: 'srs', 'stratify-col': 'stratifyCol', 'stratify-row': 'stratifyRow' };
+
+    function createGrid(mode) {
+        const container = document.getElementById(gridIds[mode]);
+        if (container.dataset.ready === 'true') return;
+        container.dataset.ready = 'true';
+        for (let r = 0; r < 10; r++) {
+            const label = document.createElement('div');
+            label.className = 'grid-label row-label'; label.style.top = `${r * 60 + 8}px`; label.textContent = r + 1;
+            container.parentElement.appendChild(label);
+        }
+        for (let c = 0; c < 10; c++) {
+            const label = document.createElement('div');
+            label.className = 'grid-label col-label'; label.style.left = `${c * 60 + 8}px`; label.textContent = c + 1;
+            container.parentElement.appendChild(label);
+        }
+        for (let r = 0; r < 10; r++) {
+            for (let c = 0; c < 10; c++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell'; cell.dataset.action = 'cell'; cell.dataset.mode = mode; cell.dataset.row = r; cell.dataset.col = c;
+                if (mode === 'stratify-col') cell.classList.add(c % 2 ? 'stratum-bg-odd' : 'stratum-bg-even');
+                if (mode === 'stratify-row') cell.classList.add(r % 2 ? 'stratum-bg-odd' : 'stratum-bg-even');
+                for (let i = 0; i < gridData[r][c]; i++) {
+                    const penguin = document.createElement('span'); penguin.className = 'penguin'; penguin.textContent = '🐧'; penguin.style.left = `${Math.random() * 50}%`; penguin.style.top = `${Math.random() * 50}%`; cell.appendChild(penguin);
+                }
+                const count = document.createElement('span'); count.className = 'count-label'; count.textContent = gridData[r][c]; cell.appendChild(count); container.appendChild(cell);
+            }
+        }
+    }
+    function cellKey(r, c) { return `${r}-${c}`; }
+    function setCellClass(mode, key, selected) { const [r, c] = key.split('-'); const cell = document.querySelector(`#${gridIds[mode]} [data-row="${r}"][data-col="${c}"]`); if (cell) cell.classList.toggle(`selected-${mode}`, selected); if (cell) cell.classList.toggle('selected', selected); }
+    function updateList(mode, keys, tableId) { const tbody = document.getElementById(tableId); tbody.innerHTML = ''; let sum = 0; [...keys].sort().forEach(key => { const [r, c] = key.split('-').map(Number); const count = gridData[r][c]; sum += count; const tr = document.createElement('tr'); tr.innerHTML = `<td>Row ${r + 1}, Col ${c + 1}</td><td>${count}</td>`; tbody.appendChild(tr); }); return sum; }
+    function finish(mode, sum, n) { const estimate = Math.round((sum / n) * 100); state.estimates[modeStateKey[mode]] = estimate; document.getElementById(`${mode}-estimate`).hidden = false; document.getElementById(`${mode}-estimate-value`).textContent = estimate; document.querySelector(`[data-pill="${mode}"]`).classList.add('completed'); updateResults(); }
+    function updateConvenience() { const sum = updateList('convenience', state.convenience, 'convenience-table'); document.getElementById('convenience-count').textContent = state.convenience.size; document.getElementById('convenience-estimate').hidden = state.convenience.size !== 10; if (state.convenience.size === 10) finish('convenience', sum, 10); else { delete state.estimates.convenience; document.querySelector('[data-pill="convenience"]').classList.remove('completed'); updateResults(); } }
+    function updateSrs() { const sum = updateList('srs', state.srs, 'srs-table'); document.getElementById('srs-count').textContent = state.srs.size; document.getElementById('srs-estimate').hidden = state.srs.size !== 10; if (state.srs.size === 10) finish('srs', sum, 10); else { delete state.estimates.srs; document.querySelector('[data-pill="srs"]').classList.remove('completed'); updateResults(); } }
+    function updateStratified(mode) { const isCol = mode === 'stratify-col'; const map = isCol ? state.stratifyCol : state.stratifyRow; const tbody = document.getElementById(`${mode}-table`); tbody.innerHTML = ''; let sum = 0; for (let i = 0; i < 10; i++) { const key = map.get(i); const tr = document.createElement('tr'); if (key) { const [r, c] = key.split('-').map(Number); sum += gridData[r][c]; tr.innerHTML = `<td>${i + 1}</td><td>Row ${r + 1}, Col ${c + 1}</td><td>${gridData[r][c]}</td>`; } else tr.innerHTML = `<td>${i + 1}</td><td>—</td><td>—</td>`; tbody.appendChild(tr); } document.getElementById(`${mode}-count`).textContent = map.size; document.getElementById(`${mode}-estimate`).hidden = map.size !== 10; if (map.size === 10) finish(mode, sum, 10); else { delete state.estimates[modeStateKey[mode]]; document.querySelector(`[data-pill="${mode}"]`).classList.remove('completed'); updateResults(); } }
+    function updateCluster() { const tbody = document.getElementById('cluster-table'); tbody.innerHTML = ''; if (state.cluster === null) { document.getElementById('cluster-status').textContent = 'Cluster selected: None'; document.getElementById('cluster-estimate').hidden = true; delete state.estimates.cluster; document.querySelector('[data-pill="cluster"]').classList.remove('completed'); updateResults(); return; } let sum = 0; for (let c = 0; c < 10; c++) { sum += gridData[state.cluster][c]; const tr = document.createElement('tr'); tr.innerHTML = `<td>Row ${state.cluster + 1}, Col ${c + 1}</td><td>${gridData[state.cluster][c]}</td>`; tbody.appendChild(tr); } const tr = document.createElement('tr'); tr.className = 'total-row'; tr.innerHTML = `<td>Row Total</td><td>${sum}</td>`; tbody.appendChild(tr); document.getElementById('cluster-status').textContent = `Cluster selected: Row ${state.cluster + 1}`; document.getElementById('cluster-estimate').hidden = false; document.getElementById('cluster-estimate-value').textContent = sum * 10; state.estimates.cluster = sum * 10; document.querySelector('[data-pill="cluster"]').classList.add('completed'); updateResults(); }
+    function updateResults() { const names = ['convenience', 'srs', 'stratify-col', 'stratify-row', 'cluster']; const keys = ['convenience', 'srs', 'stratifyCol', 'stratifyRow', 'cluster']; names.forEach((name, i) => { const value = state.estimates[keys[i]]; document.getElementById(`results-${name}`).textContent = value === undefined ? '—' : value; document.getElementById(`results-${name}-diff`).textContent = value === undefined ? '—' : Math.abs(value - 480); }); }
+    function renderTab(tab) { if (gridIds[tab]) createGrid(tab); document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab)); document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.toggle('active', pane.dataset.tabPane === tab)); }
+    function reset(mode) { if (mode === 'convenience' || mode === 'srs') { state[mode].clear(); document.querySelectorAll(`#${gridIds[mode]} .grid-cell`).forEach(cell => cell.classList.remove(`selected-${mode}`, 'selected')); mode === 'convenience' ? updateConvenience() : updateSrs(); } else if (mode === 'stratify-col' || mode === 'stratify-row') { const map = mode === 'stratify-col' ? state.stratifyCol : state.stratifyRow; map.clear(); document.querySelectorAll(`#${gridIds[mode]} .grid-cell`).forEach(cell => cell.classList.remove(`selected-${mode}`, 'selected')); updateStratified(mode); } else { state.cluster = null; document.getElementById('cluster-input').value = ''; document.querySelectorAll('#grid-cluster .grid-cell').forEach(cell => cell.classList.remove('selected-cluster', 'selected')); updateCluster(); } }
+
+    app.addEventListener('click', event => { const target = event.target.closest('[data-action]'); if (!target || !app.contains(target)) return; const action = target.dataset.action;
+        if (action === 'tab') { renderTab(target.dataset.tab); return; }
+        if (action === 'reset') { reset(target.dataset.mode); return; }
+        if (action === 'submit') { window.open('https://docs.google.com/forms/d/e/1FAIpQLSdW-SqF-lXyAfuYcYr-dpOgSh94pbXf3BcCnZGfqjY9tOYlxg/viewform?usp=publish-editor', '_blank', 'noopener'); return; }
+        if (action === 'generate-srs') { if (state.srs.size < 10) { let r, c, key; do { r = Math.floor(Math.random() * 10); c = Math.floor(Math.random() * 10); key = cellKey(r, c); } while (state.srs.has(key)); state.srs.add(key); setCellClass('srs', key, true); updateSrs(); } return; }
+        if (action === 'cell') { const mode = target.dataset.mode; const r = Number(target.dataset.row); const c = Number(target.dataset.col); const key = cellKey(r, c); if (mode === 'convenience' || mode === 'srs') { const set = state[mode]; if (set.has(key)) { set.delete(key); setCellClass(mode, key, false); } else if (set.size < 10) { set.add(key); setCellClass(mode, key, true); } mode === 'convenience' ? updateConvenience() : updateSrs(); } else if (mode === 'stratify-col') { const old = state.stratifyCol.get(c); if (old) setCellClass(mode, old, false); state.stratifyCol.set(c, key); setCellClass(mode, key, true); updateStratified(mode); } else if (mode === 'stratify-row') { const old = state.stratifyRow.get(r); if (old) setCellClass(mode, old, false); state.stratifyRow.set(r, key); setCellClass(mode, key, true); updateStratified(mode); } else if (mode === 'cluster') { document.getElementById('cluster-input').value = r + 1; state.cluster = r; document.querySelectorAll('#grid-cluster .grid-cell').forEach(cell => cell.classList.toggle('selected-cluster', Number(cell.dataset.row) === r)); updateCluster(); } }
+    });
+    app.addEventListener('input', event => { if (event.target.dataset.action !== 'cluster-input') return; const value = Number(event.target.value); if (event.target.value === '' || !Number.isInteger(value) || value < 1 || value > 10) { state.cluster = null; } else { state.cluster = value - 1; document.querySelectorAll('#grid-cluster .grid-cell').forEach(cell => { cell.classList.toggle('selected-cluster', Number(cell.dataset.row) === state.cluster); }); } updateCluster(); });
+    app.addEventListener('wheel', event => { if (event.target.matches('input[type="number"]')) event.preventDefault(); }, { passive: false });
+    renderTab('convenience'); updateConvenience(); updateSrs(); updateStratified('stratify-col'); updateStratified('stratify-row'); updateCluster();
+});
+</script>
+</body>
+</html>

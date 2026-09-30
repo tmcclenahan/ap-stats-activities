@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sampling Methods: Teacher Visual Toolkit</title>
+<style>
+:root{--navy:#0C2340;--gold:#FFD600;--white:#FFFFFF;--red:#c62828;--green:#16833b;--gray:#d9e1ea;--ink:#17324f;--soft:#f4f7fa;--shadow:0 10px 28px rgba(12,35,64,.12)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--ink);background:var(--soft);line-height:1.45}button,select{font:inherit}button{cursor:pointer}.site-header{background:var(--navy);color:var(--white);padding:22px clamp(18px,4vw,56px);display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{color:var(--gold);font-size:clamp(1.3rem,2.3vw,2rem);font-weight:800}.subtitle{font-size:.95rem;color:#dbe7f4;margin-top:3px}.eyebrow{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:800}.container{max-width:1180px;margin:0 auto;padding:28px clamp(16px,4vw,38px) 46px}.tabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:3px solid #d4dde7;margin-bottom:26px}.tab{border:0;background:transparent;color:var(--navy);padding:13px 17px;font-weight:800;border-bottom:4px solid transparent;margin-bottom:-3px}.tab.active{color:var(--navy);border-color:var(--gold);background:#fffdf0}.panel{display:none}.panel.active{display:block}.section-heading{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:18px}.section-heading h1{margin:3px 0 0;color:var(--navy);font-size:clamp(1.6rem,3vw,2.5rem)}.section-heading p{margin:0;max-width:620px;color:#52677d}.method-section{margin-bottom:26px}.method-section h2{font-size:1.05rem;color:var(--navy);border-left:5px solid var(--gold);padding-left:10px}.bias-note{font-size:.85rem;font-style:italic;color:#52677d;border-left:3px solid var(--red);padding:7px 0 7px 12px;margin:-8px 0 14px}.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}.method-card,.scenario-card,.compare-panel{background:var(--white);border-radius:16px;box-shadow:var(--shadow);border:1px solid #e3eaf1}.method-card{padding:20px;text-align:left;transition:transform .2s,box-shadow .2s;border-top:5px solid var(--green)}.method-card.biased{border-top-color:var(--red)}.method-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(12,35,64,.18)}.method-card h3{margin:10px 0 6px;color:var(--navy)}.method-card p{margin:0;color:#52677d;font-size:.93rem}.badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 10px;font-size:.72rem;font-weight:900;letter-spacing:.03em}.badge.biased{background:#fde5e5;color:var(--red)}.badge.random{background:#e2f5e8;color:var(--green)}.detail-panel{background:var(--white);border-radius:18px;padding:24px;box-shadow:var(--shadow);border:1px solid #e3eaf1}.detail-top{display:flex;justify-content:space-between;align-items:start;gap:15px;flex-wrap:wrap}.detail-top h2{margin:5px 0;color:var(--navy)}.definition{font-size:1.08rem;max-width:790px}.detail-layout{display:grid;grid-template-columns:minmax(300px,1fr) minmax(260px,.8fr);gap:28px;align-items:start}.diagram-wrap{background:#f8fafc;border-radius:14px;padding:15px;border:1px solid #e4ebf2}.diagram-title{font-size:.85rem;font-weight:800;color:#587087;margin-bottom:8px}.dot-svg{width:100%;height:auto;display:block}.dot{fill:var(--gray);transition:fill .35s,opacity .35s,transform .35s}.dot.selected{fill:var(--gold);filter:drop-shadow(0 0 5px rgba(255,214,0,.7))}.stratum-a{fill:#e9f4ff}.stratum-b{fill:#eaf8ef}.stratum-c{fill:#fff0f3}.stratum-d{fill:#fff9df}.cluster-box{fill:none;stroke:#b8c8d8;stroke-width:2;stroke-dasharray:4 4;transition:fill .35s,stroke .35s,filter .35s}.cluster-box.selected{fill:#fff8c7;stroke:var(--gold);filter:drop-shadow(0 0 5px rgba(255,214,0,.7))}.svg-label,.svg-banner,.speech-bubble,.teacher-icon{opacity:0;transition:opacity .35s}.svg-label.visible,.svg-banner.visible,.speech-bubble.visible,.teacher-icon.visible{opacity:1}.svg-label,.svg-banner{font-family:Inter,Segoe UI,Arial,sans-serif;font-size:9px;font-weight:800;fill:var(--navy)}.svg-banner{font-size:11px;fill:var(--navy)}.speech-bubble rect{fill:white;stroke:var(--navy);stroke-width:1}.speech-bubble path{fill:white;stroke:var(--navy);stroke-width:1}.speech-bubble text{font-family:Inter,Segoe UI,Arial,sans-serif;font-size:9px;fill:var(--navy)}.teacher-icon circle,.teacher-icon rect{fill:var(--navy);stroke:var(--navy)}.teacher-icon text{font-size:9px;fill:#52677d}.dot-label{pointer-events:none}.srs-drum{opacity:0;transition:opacity 0.3s}.srs-drum.visible{opacity:1}.info-box h3{color:var(--navy);margin:0 0 8px}.info-box ul{margin:0 0 20px;padding-left:20px}.watch{background:#fff9df;border-left:5px solid var(--gold);padding:13px 15px;border-radius:8px}.watch strong{color:var(--navy)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.primary,.secondary,.nav-button{border-radius:9px;padding:10px 15px;font-weight:800}.primary{border:2px solid var(--navy);background:var(--navy);color:var(--white)}.secondary{border:2px solid #cbd6e2;background:white;color:var(--navy)}.primary:hover{background:#183b63}.scenario-card{padding:clamp(24px,5vw,56px);min-height:235px;display:flex;flex-direction:column;justify-content:center;text-align:center}.scenario-number{font-weight:900;color:#70849a;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem}.scenario-text{font-size:clamp(1.25rem,3vw,2rem);font-weight:750;color:var(--navy);margin:18px auto 0;max-width:900px}.reveal-area{text-align:center;min-height:108px;padding:22px 0}.answer{display:inline-block;text-align:left;background:#eef8f1;border-left:5px solid var(--green);border-radius:10px;padding:14px 18px;max-width:800px}.answer.biased{background:#fff0f0;border-color:var(--red)}.answer h3{margin:8px 0 4px;color:var(--navy)}.answer p{margin:0}.scenario-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.compare-controls{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}.select-label{font-weight:900;color:var(--navy)}select{width:100%;margin-top:7px;border:2px solid #cbd6e2;border-radius:9px;padding:11px;background:white;color:var(--navy)}.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.compare-panel{padding:20px}.compare-panel h2{color:var(--navy);font-size:1.25rem;margin:8px 0}.compare-panel .detail-layout{display:block}.compare-panel .dot-svg{max-width:390px;margin:auto}.compare-panel .info-box{margin-top:16px}.key-difference{margin-top:20px;background:var(--navy);color:white;border-radius:14px;padding:18px 22px;border-left:8px solid var(--gold)}.key-difference strong{color:var(--gold);display:block;margin-bottom:4px}.site-footer{text-align:center;background:var(--navy);color:#dbe7f4;padding:18px;font-size:.86rem}.hidden{display:none!important}@media(max-width:760px){.site-header{display:block}.detail-layout,.compare-grid,.compare-controls{grid-template-columns:1fr}.container{padding-top:18px}.section-heading{display:block}.section-heading p{margin-top:8px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header class="site-header"><div><div class="brand">Steve's AP Stats Lab</div><div class="subtitle">Sampling Methods: Teacher Visual Toolkit</div></div><div class="eyebrow">Project • Teach • Compare</div></header>
+<main class="container">
+<nav class="tabs" aria-label="Toolkit tabs"><button class="tab active" data-action="tab" data-tab="explorer">Method Explorer</button><button class="tab" data-action="tab" data-tab="scenarios">Scenario Reveal</button><button class="tab" data-action="tab" data-tab="compare">Compare Two Methods</button></nav>
+<section id="explorer" class="panel active"><div class="section-heading"><div><div class="eyebrow">Tab 1</div><h1>Method Explorer</h1></div><p>Choose a method to animate how its sample is selected. Use the visual as you talk through the design.</p></div><div id="method-grid"></div><div id="method-detail" class="hidden"></div></section>
+<section id="scenarios" class="panel"><div class="section-heading"><div><div class="eyebrow">Tab 2</div><h1>Scenario Reveal</h1></div><p>Project one scenario at a time, pause for predictions, then reveal the answer.</p></div><div id="scenario-content"></div></section>
+<section id="compare" class="panel"><div class="section-heading"><div><div class="eyebrow">Tab 3</div><h1>Compare Two Methods</h1></div><p>Put commonly confused sampling designs side by side and make the distinction visible.</p></div><div class="compare-controls"><label class="select-label">Left method<select id="left-method" data-action="compare-select"></select></label><label class="select-label">Right method<select id="right-method" data-action="compare-select"></select></label></div><div id="compare-content"></div></section>
+</main><footer class="site-footer">© Steve's AP Stats Lab | stevesapstatslab.com</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const app = document.getElementById('app');
+  if (!app) return;
+
+  const methods = {
+    convenience: {name:'Convenience Sampling', type:'biased', badge:'🔴 BIASED', definition:'A sample is chosen from people who are easiest to reach.', bullets:['Fast and inexpensive to conduct.','Selection depends on availability, not chance.','Often misses important parts of the population.'], watch:'Convenience samples can sound practical, but easy access does not make a sample representative of the population.', animation:'convenience'},
+    voluntary: {name:'Voluntary Response Sampling', type:'biased', badge:'🔴 BIASED', definition:'People choose themselves to participate after an open invitation.', bullets:['Participants opt in on their own.','People with strong opinions are more likely to respond.','The results can overrepresent extreme views.'], watch:'An open invitation is not the same as a random selection; nonresponse and self-selection can create bias.', animation:'voluntary'},
+    srs: {name:'Simple Random Sample (SRS)', type:'random', badge:'🟢 RANDOM', definition:'Every individual in the population has an equal chance of being selected.', bullets:['Use a complete list of the population.','Random selection determines who is included.','Each possible sample of the same size is equally likely.'], watch:'Random selection helps avoid selection bias, but it does not guarantee a perfectly representative sample.', animation:'srs'},
+    stratified: {name:'Stratified Random Sample', type:'random', badge:'🟢 RANDOM', definition:'The population is split into strata, and a random sample is taken from every stratum.', bullets:['Strata are meaningful groups within the population.','Random samples come from all strata.','Useful for ensuring subgroup representation.'], watch:'Strata should be internally similar; do not confuse sampling from every group with selecting entire groups.', animation:'stratified'},
+    cluster: {name:'Cluster Sample', type:'random', badge:'🟢 RANDOM', definition:'Entire pre-existing groups are randomly selected, and every individual in chosen groups is surveyed.', bullets:['Clusters are naturally occurring groups.','Randomly choose some clusters.','Survey everyone in the selected clusters.'], watch:'Cluster sampling selects whole groups; it does not take a few individuals from every group.', animation:'cluster'},
+    systematic: {name:'Systematic Random Sample', type:'random', badge:'🟢 RANDOM', definition:'After a random starting point, every $k$th individual on a list is selected.', bullets:['Begin with a random start.','Use a fixed interval such as every 10th person.','Requires an ordered list of the population.'], watch:'The random start matters; selecting every $k$th person without it is not a properly randomized design.', animation:'systematic'}
+  };
+  const order = ['convenience','voluntary','srs','stratified','cluster','systematic'];
+  const scenarios = [
+    ['A teacher surveys the first 10 students who walk into class.','convenience','The teacher selected whoever was easiest to reach, not randomly.'],
+    ['A radio station asks listeners to text in their vote for the best song.','voluntary','Only listeners who feel strongly enough bother to respond.'],
+    ['A researcher assigns every student in a school a number and uses a random number generator to select 40.','srs','Every student had an equal chance of being selected.'],
+    ['A principal divides students into grade levels and randomly selects 15 from each grade.','stratified','The population was divided into groups (strata) and a random sample was taken from each.'],
+    ['A researcher randomly selects 5 homerooms and surveys every student in those rooms.','cluster','Entire pre-existing groups were randomly selected and fully surveyed.'],
+    ['A quality control inspector checks every 20th item off an assembly line.','systematic','Items were selected at a fixed interval after a random start.'],
+    ['A news website posts a poll and invites visitors to click and respond.','voluntary','Only motivated visitors choose to participate, creating bias.'],
+    ['A researcher divides a city into neighborhoods, randomly picks 4 neighborhoods, and surveys everyone in them.','cluster','Entire pre-existing clusters (neighborhoods) were randomly chosen and fully surveyed.'],
+    ['A doctor surveys patients in the waiting room because they are easy to access.','convenience','The sample was chosen based on availability, not randomness.'],
+    ['A researcher lists all employees alphabetically, picks a random starting point, then selects every 10th person.','systematic','A fixed interval was used after a random start, giving every person a chance to be selected.']
+  ];
+  for (let i = scenarios.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [scenarios[i], scenarios[j]] = [scenarios[j], scenarios[i]];
+  }
+  const differences = {
+    'cluster|stratified':'Stratified sampling takes a random sample from every stratum; cluster sampling randomly selects entire clusters and surveys everyone in the chosen clusters.',
+    'srs|systematic':'SRS uses random selection for each sample member (or each possible sample); systematic sampling uses a random start followed by a fixed interval.',
+    'convenience|voluntary':'Convenience sampling selects whoever is easiest to reach; voluntary response sampling lets people choose themselves after an open invitation.',
+    'convenience|srs':'Convenience relies on availability and is biased; SRS uses chance so every individual has an equal opportunity to be selected.',
+    'convenience|stratified':'Convenience selects accessible people; stratified sampling randomly samples within every meaningful subgroup.',
+    'convenience|cluster':'Convenience selects accessible individuals; cluster sampling randomly selects pre-existing groups and surveys their members.',
+    'convenience|systematic':'Convenience uses ease of access; systematic sampling follows a random start and fixed interval.',
+    'voluntary|srs':'Voluntary response depends on self-selection; SRS uses random selection so every individual has an equal chance.',
+    'voluntary|stratified':'Voluntary response lets people opt in; stratified sampling randomly selects individuals from every stratum.',
+    'voluntary|cluster':'Voluntary response depends on who chooses to respond; cluster sampling randomly chooses entire pre-existing groups.',
+    'voluntary|systematic':'Voluntary response is self-selected; systematic sampling uses a random start and fixed interval.',
+    'cluster|srs':'Cluster sampling randomly selects whole groups; SRS randomly selects individuals from the entire population.',
+    'cluster|systematic':'Cluster sampling selects entire groups; systematic sampling selects individuals at a fixed interval from a list.',
+    'srs|stratified':'SRS samples directly from the whole population; stratified sampling first divides the population and samples from every stratum.',
+    'srs|systematic':'SRS uses random selection throughout; systematic sampling uses a random start and then every $k$th individual.',
+    'stratified|systematic':'Stratified sampling guarantees a random sample from every stratum; systematic sampling follows an interval across an ordered list.'
+  };
+
+  function badge(method){return '<span class="badge '+method.type+'">'+method.badge+'</span>';}
+  function svgFor(key, id){
+    let html='<svg class="dot-svg" viewBox="0 0 260 260" role="img" aria-label="Animated dot grid for '+methods[key].name+'">';
+    if(key==='stratified'){
+      html+='<rect class="stratum-a" x="16" y="16" width="108" height="108" rx="8"></rect><rect class="stratum-b" x="136" y="16" width="108" height="108" rx="8"></rect><rect class="stratum-c" x="16" y="136" width="108" height="108" rx="8"></rect><rect class="stratum-d" x="136" y="136" width="108" height="108" rx="8"></rect>';
+      html+='<text class="svg-label strat-label-a" x="70" y="12" text-anchor="middle">Random sample ↓</text><text class="svg-label strat-label-b" x="190" y="12" text-anchor="middle">Random sample ↓</text><text class="svg-label strat-label-c" x="70" y="128" text-anchor="middle">Random sample ↓</text><text class="svg-label strat-label-d" x="190" y="128" text-anchor="middle">Random sample ↓</text>';
+    }
+    if(key==='cluster'){
+      const boxes=[[13,13],[91,13],[169,13],[13,129],[91,129],[169,129]];
+      boxes.forEach((position,index)=>{html+='<rect id="cluster-box-'+index+'" class="cluster-box" x="'+position[0]+'" y="'+position[1]+'" width="70" height="105" rx="9"></rect>';});
+      html+='<text class="svg-label cluster-label-1" x="92" y="11" text-anchor="middle">Randomly selected cluster</text><text class="svg-label cluster-label-4" x="126" y="127" text-anchor="middle">Randomly selected cluster</text>';
+    }
+    if(key==='systematic'){
+      html+='<g class="svg-label systematic-start"><text x="106" y="11" text-anchor="middle">Random start</text><path d="M106 14 L106 23" stroke="#0C2340" stroke-width="1" marker-end="url(#arrow-'+id+')"></path></g><text class="svg-banner systematic-banner" x="130" y="253" text-anchor="middle">Every 4th person selected</text><defs><marker id="arrow-'+id+'" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 z" fill="#0C2340"></path></marker></defs>';
+    }
+    const bubbles=['Me, me!','Pick me!','I have a strong opinion!','Choose me!','I feel strongly!','Me!'];
+    for(let i=0;i<36;i++){
+      const x=34+(i%6)*36,y=34+Math.floor(i/6)*36;
+      html+='<circle class="dot" data-dot="'+i+'" cx="'+x+'" cy="'+y+'" r="10"></circle>';
+      if(key==='srs')html+='<text class="dot-label" data-label="'+i+'" x="'+x+'" y="'+(y+4)+'" text-anchor="middle" font-size="8" font-weight="bold" fill="#52677d" font-family="Inter,sans-serif">'+(i+1)+'</text>';
+    }
+    if(key==='voluntary'){
+      const voluntaryIndices=[2,5,9,14,18,23,28,33];
+      voluntaryIndices.forEach((n,selIdx)=>{
+        const dotX=34+(n%6)*36;
+        const dotY=34+Math.floor(n/6)*36;
+        const bubbleX=Math.max(2,Math.min(188,dotX-35));
+        const bubbleY=dotY-38;
+        const phrase=bubbles[selIdx%6];
+        html+='<g class="speech-bubble speech-bubble-'+selIdx+'"><rect x="'+bubbleX+'" y="'+bubbleY+'" width="70" height="20" rx="6"></rect><polygon points="'+(bubbleX+30)+','+(bubbleY+20)+' '+(bubbleX+35)+','+(bubbleY+27)+' '+(bubbleX+40)+','+(bubbleY+20)+'" fill="white" stroke="#0C2340" stroke-width="1"></polygon><rect x="'+(bubbleX+29)+'" y="'+(bubbleY+18)+'" width="12" height="4" fill="white"></rect><text x="'+(bubbleX+35)+'" y="'+(bubbleY+13)+'" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" fill="#0C2340">'+phrase+'</text></g>';
+      });
+    }
+    if(key==='srs')html+='<g class="srs-drum"><rect x="80" y="4" width="100" height="18" rx="5" fill="#0C2340"></rect><text class="srs-drum-text" x="130" y="16" text-anchor="middle" font-size="10" font-weight="bold" fill="#FFD600" font-family="Inter,sans-serif">Selecting...</text></g>';
+    if(key==='convenience'){
+      html+='<g class="teacher-icon"><text x="16" y="52" text-anchor="middle" font-size="18" font-family="serif">🎓</text><line x1="16" y1="56" x2="16" y2="70" stroke="#0C2340" stroke-width="2"/><line x1="16" y1="60" x2="8" y2="68" stroke="#0C2340" stroke-width="2"/><line x1="16" y1="60" x2="24" y2="68" stroke="#0C2340" stroke-width="2"/><line x1="16" y1="70" x2="10" y2="80" stroke="#0C2340" stroke-width="2"/><line x1="16" y1="70" x2="22" y2="80" stroke="#0C2340" stroke-width="2"/><text x="16" y="92" text-anchor="middle" font-size="7" fill="#52677d" font-family="Inter,sans-serif">easiest</text><text x="16" y="101" text-anchor="middle" font-size="7" fill="#52677d" font-family="Inter,sans-serif">to reach</text></g>';
+    }
+    return html+'</svg>';
+  }
+  function detailHtml(key){const m=methods[key];return '<div class="detail-panel"><div class="detail-top"><div><div>'+badge(m)+'</div><h2>'+m.name+'</h2><p class="definition">'+m.definition+'</p></div><button class="secondary" data-action="back">← Back to methods</button></div><div class="detail-layout"><div class="diagram-wrap"><div class="diagram-title">Population of 36 • selected members glow gold</div>'+svgFor(key,key)+'<div class="actions"><button class="primary" data-action="replay" data-method="'+key+'">↻ Replay Animation</button></div></div><div class="info-box"><h3>Key Characteristics</h3><ul>'+m.bullets.map(x=>'<li>'+x+'</li>').join('')+'</ul><div class="watch"><strong>Watch out for…</strong><br>'+m.watch+'</div></div></div></div>';}
+  function renderGrid(){const grid=document.getElementById('method-grid');grid.innerHTML='<div class="method-section"><h2>🔴 Biased Methods</h2><div class="bias-note">Bias occurs when the sampling method systematically favors certain individuals, making the sample unrepresentative of the population.</div><div class="card-grid">'+order.slice(0,2).map(card).join('')+'</div></div><div class="method-section"><h2>🟢 Random / Unbiased Methods</h2><div class="card-grid">'+order.slice(2).map(card).join('')+'</div></div>';}
+  function card(key){const m=methods[key];return '<button class="method-card '+m.type+'" data-action="open-method" data-method="'+key+'">'+badge(m)+'<h3>'+m.name+'</h3><p>'+m.definition+'</p></button>';}
+  function selectedIndices(key){if(key==='convenience')return [0,1,6,7,12,13];if(key==='voluntary')return [2,5,9,14,18,23,28,33];if(key==='srs')return [3,11,17,22,29,34];if(key==='stratified')return [2,13,4,15,19,30,23,34];return [2,6,10,14,18,22,26,30,34];}
+  function clusterIndices(cluster){const groups=[[0,1,6,7,12,13],[2,3,8,9,14,15],[4,5,10,11,16,17],[18,19,24,25,30,31],[20,21,26,27,32,33],[22,23,28,29,34,35]];return groups[cluster];}
+  let srsIntervals=[];
+  function clearSrsIntervals(){srsIntervals.forEach(clearInterval);srsIntervals=[];}
+  function animate(svg,key){
+    if(!svg)return;
+    clearSrsIntervals();
+    const dots=[...svg.querySelectorAll('.dot')];
+    dots.forEach(d=>d.classList.remove('selected'));
+    svg.querySelectorAll('.visible').forEach(node=>node.classList.remove('visible'));
+    if(key==='cluster'){
+      const firstBox=svg.querySelector('#cluster-box-1');
+      const secondBox=svg.querySelector('#cluster-box-4');
+      setTimeout(()=>{if(firstBox)firstBox.classList.add('selected');const label=svg.querySelector('.cluster-label-1');if(label)label.classList.add('visible');},0);
+      setTimeout(()=>clusterIndices(1).forEach(index=>dots[index].classList.add('selected')),600);
+      setTimeout(()=>{if(secondBox)secondBox.classList.add('selected');const label=svg.querySelector('.cluster-label-4');if(label)label.classList.add('visible');},1200);
+      setTimeout(()=>clusterIndices(4).forEach(index=>dots[index].classList.add('selected')),1800);
+      return;
+    }
+    if(key==='stratified'){
+      const steps=[
+        [200,2,null],[600,13,'.strat-label-a'],[1000,4,null],[1400,15,'.strat-label-b'],
+        [1800,19,null],[2200,30,'.strat-label-c'],[2600,23,null],[3000,34,'.strat-label-d']
+      ];
+      steps.forEach(([delay,index,labelSelector])=>setTimeout(()=>{if(dots[index])dots[index].classList.add('selected');if(labelSelector){const label=svg.querySelector(labelSelector);if(label)label.classList.add('visible');}},delay));
+      return;
+    }
+    if(key==='srs'){
+      const drum=svg.querySelector('.srs-drum');
+      const drumText=svg.querySelector('.srs-drum-text');
+      if(drum)drum.classList.add('visible');
+      const startSpinning=()=>{const intervalId=setInterval(()=>{if(drumText)drumText.textContent=String(Math.floor(Math.random()*36)+1);},80);srsIntervals.push(intervalId);};
+      startSpinning();
+      // Generate 6 unique random indices from 0–35
+      const pool = Array.from({length: 36}, (_, i) => i);
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      const inds = pool.slice(0, 6).sort((a, b) => a - b);
+      inds.forEach((n,i)=>setTimeout(()=>{
+        clearSrsIntervals();
+        if(drumText)drumText.textContent=String(n+1);
+        if(dots[n])dots[n].classList.add('selected');
+        const label=svg.querySelector('.dot-label[data-label="'+n+'"]');
+        if(label)label.setAttribute('fill','#0C2340');
+        if(i<inds.length-1)setTimeout(startSpinning,300);
+      },1400+i*400));
+      return;
+    }
+    const inds=selectedIndices(key);
+    inds.forEach((n,i)=>{
+      const delay=key==='convenience'?250:i*260+200;
+      setTimeout(()=>{
+        if(dots[n])dots[n].classList.add('selected');
+        if(key==='voluntary'){
+          const bubble=svg.querySelector('.speech-bubble-'+i);
+          if(bubble)bubble.classList.add('visible');
+        }
+        if(key==='systematic' && n===2){const label=svg.querySelector('.systematic-start');if(label)label.classList.add('visible');}
+      },delay);
+    });
+    if(key==='convenience')setTimeout(()=>{const teacher=svg.querySelector('.teacher-icon');if(teacher)teacher.classList.add('visible');},200);
+    if(key==='systematic')setTimeout(()=>{const banner=svg.querySelector('.systematic-banner');if(banner)banner.classList.add('visible');},800);
+  }
+  function openMethod(key){document.getElementById('method-grid').classList.add('hidden');const d=document.getElementById('method-detail');d.classList.remove('hidden');d.innerHTML=detailHtml(key);setTimeout(()=>animate(d.querySelector('svg'),key),50);}
+  let scenarioIndex=0,revealed=false;
+  function renderScenario(){const s=scenarios[scenarioIndex];let answer='';if(revealed){const m=methods[s[1]];answer='<div class="answer '+m.type+'">'+badge(m)+'<h3>'+m.name+'</h3><p>'+s[2]+'</p></div>';}document.getElementById('scenario-content').innerHTML='<div class="scenario-card"><div class="scenario-number">Scenario '+(scenarioIndex+1)+' of 10</div><div class="scenario-text">'+s[0]+'</div></div><div class="reveal-area">'+(revealed?answer:'<button class="primary" data-action="reveal">Reveal Answer</button>')+'</div><div class="scenario-actions"><button class="secondary" data-action="previous" '+(scenarioIndex===0?'disabled':'')+'>← Previous</button><button class="primary" data-action="next" '+(scenarioIndex===9?'disabled':'')+'>Next →</button></div>';}
+  function populateSelects(){['left-method','right-method'].forEach((id,i)=>{const el=document.getElementById(id);el.innerHTML=order.map(k=>'<option value="'+k+'">'+methods[k].name+'</option>').join('');el.value=i===0?'stratified':'cluster';});}
+  function compareCard(key){const m=methods[key];return '<div class="compare-panel">'+badge(m)+'<h2>'+m.name+'</h2><p>'+m.definition+'</p><div class="diagram-wrap">'+svgFor(key,key+'compare')+'<div class="actions"><button class="secondary" data-action="replay-compare" data-method="'+key+'">↻ Replay Animation</button></div></div><div class="info-box"><h3>Key Characteristics</h3><ul>'+m.bullets.map(x=>'<li>'+x+'</li>').join('')+'</ul><div class="watch"><strong>Watch out for…</strong><br>'+m.watch+'</div></div></div>';}
+  function renderCompare(){const l=document.getElementById('left-method').value,r=document.getElementById('right-method').value;let key=l+'|'+r;let diff=differences[key]||differences[r+'|'+l]||'Both methods describe how a sample is selected; compare whether selection is based on access, self-selection, individuals, subgroups, whole groups, or a fixed interval.';document.getElementById('compare-content').innerHTML='<div class="compare-grid">'+compareCard(l)+compareCard(r)+'</div><div class="key-difference"><strong>Key Difference</strong>'+diff+'</div>';setTimeout(()=>document.querySelectorAll('#compare-content svg').forEach((s,i)=>animate(s,i===0?l:r)),30);}
+  renderGrid();renderScenario();populateSelects();renderCompare();
+  app.addEventListener('click',function(e){const el=e.target.closest('[data-action]');if(!el)return;const action=el.dataset.action;if(action==='tab'){document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===el));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===el.dataset.tab));}if(action==='open-method')openMethod(el.dataset.method);if(action==='back'){document.getElementById('method-detail').classList.add('hidden');document.getElementById('method-grid').classList.remove('hidden');}if(action==='replay'){animate(document.querySelector('#method-detail svg'),el.dataset.method);}if(action==='reveal'){revealed=true;renderScenario();}if(action==='previous'&&scenarioIndex>0){scenarioIndex--;revealed=false;renderScenario();}if(action==='next'&&scenarioIndex<9){scenarioIndex++;revealed=false;renderScenario();}if(action==='replay-compare'){const panel=el.closest('.compare-panel');animate(panel.querySelector('svg'),el.dataset.method);}});
+  app.addEventListener('change',function(e){if(e.target.matches('[data-action="compare-select"]'))renderCompare();});
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Counting Penguins — Activity 1</title>
+  <style>
+    :root { --navy:#0C2340; --gold:#FFD600; --white:#FFFFFF; --green:#198754; --blue:#dcecff; --ink:#14253d; --line:#cbd5e1; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Arial,Helvetica,sans-serif; color:var(--ink); background:#f4f7fb; }
+    header { background:var(--navy); color:var(--white); padding:28px 20px 24px; text-align:center; }
+    h1 { color:var(--gold); margin:0 0 8px; font-size:clamp(1.8rem,4vw,2.8rem); }
+    header p { margin:0; font-size:1.1rem; }
+    .progress { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:18px; }
+    .progress span { border:1px solid #7890aa; border-radius:999px; padding:6px 11px; font-size:.85rem; }
+    .progress .done { background:var(--green); border-color:var(--green); color:white; }
+    nav { display:flex; flex-wrap:wrap; justify-content:center; gap:4px; background:var(--navy); padding:0 12px 12px; }
+    nav button { color:white; background:transparent; border:0; border-bottom:4px solid transparent; padding:13px 16px; cursor:pointer; font-weight:700; }
+    nav button.active { border-bottom-color:var(--gold); color:var(--gold); }
+    main { max-width:1250px; margin:0 auto; padding:24px 16px 50px; }
+    .panel { background:white; border-radius:14px; box-shadow:0 4px 15px #0c234014; padding:20px; margin-bottom:18px; }
+    h2 { color:var(--navy); margin-top:0; }
+    .instructions { border-left:5px solid var(--gold); background:#fffbea; padding:14px 18px; line-height:1.5; }
+    .instructions h3 { margin:12px 0 4px; color:var(--navy); }
+    .instructions ol { margin:4px 0 12px 22px; padding:0; }
+    .grid-wrap { position:relative; overflow:auto; padding:12px 8px 20px; }
+    .helicopter { position:absolute; top:-5px; right:0; font-size:30px; z-index:3; }
+    .grid-layout { display:grid; grid-template-columns:28px repeat(10,85px); grid-template-rows:28px repeat(10,85px); width:max-content; margin:25px auto 0; }
+    .corner { background:transparent; }
+    .label { display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--navy); }
+    .cell { position:relative; width:85px; height:85px; border:1px solid white; background:#eaf1f8; cursor:pointer; overflow:hidden; transition:.15s; }
+    .cell:hover { outline:3px solid #9eb7d1; z-index:2; }
+    .cell.selected { background:var(--gold); outline:3px solid #b99400; z-index:2; }
+    .cell.srs-selected { background:#b9dafd; outline:3px solid #2674c5; z-index:2; }
+    .cell.cluster-selected { background:var(--blue); outline:2px solid #2674c5; }
+    .cell.stratum-1 { background:#f0f8ff; } .cell.stratum-2 { background:#fffdf0; } .cell.stratum-3 { background:#f0f8ff; } .cell.stratum-4 { background:#fffdf0; } .cell.stratum-5 { background:#f0f8ff; }
+    .cell.stratum-6 { background:#fffdf0; } .cell.stratum-7 { background:#f0f8ff; } .cell.stratum-8 { background:#fffdf0; } .cell.stratum-9 { background:#f0f8ff; } .cell.stratum-10 { background:#fffdf0; }
+    .cell.stratum-1.selected,.cell.stratum-2.selected,.cell.stratum-3.selected,.cell.stratum-4.selected,.cell.stratum-5.selected,.cell.stratum-6.selected,.cell.stratum-7.selected,.cell.stratum-8.selected,.cell.stratum-9.selected,.cell.stratum-10.selected { background:var(--gold); }
+    .penguin { position:absolute; font-size:13px; line-height:1; user-select:none; }
+    .status { font-weight:700; color:var(--navy); margin:12px 0; }
+    .results-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:7px; margin-top:12px; }
+    .result-item { border:1px solid var(--line); padding:8px; border-radius:7px; background:#fafcff; }
+    .estimate { display:none; margin-top:16px; padding:16px; border-radius:10px; background:var(--gold); color:var(--navy); font-size:1.35rem; font-weight:800; text-align:center; }
+    .estimate.visible { display:block; }
+    table { border-collapse:collapse; width:100%; margin-top:12px; background:white; }
+    th,td { border:1px solid var(--line); padding:9px; text-align:left; vertical-align:middle; }
+    th { background:var(--navy); color:white; }
+    input[type=number] { width:75px; padding:8px; border:1px solid #8da2b8; border-radius:6px; font-size:1rem; }
+    input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+    input[type=number] { -moz-appearance:textfield; appearance:textfield; }
+    .count-readout { min-width:120px; display:inline-block; font-weight:700; }
+    .stratum-block { margin:18px 0; padding:14px; border-radius:10px; border:1px solid var(--line); }
+    .stratum-block h3 { margin:0 0 8px; color:var(--navy); }
+    .button { background:var(--navy); color:white; border:0; border-radius:7px; padding:11px 16px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block; }
+    .button:hover { background:#173e6b; }
+    .muted { color:#526477; }
+    @media (max-width:700px) { .panel { padding:14px; } th,td { padding:6px; font-size:.9rem; } .grid-layout { grid-template-columns:25px repeat(10,68px); grid-template-rows:25px repeat(10,68px); } .cell { width:68px; height:68px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Counting Penguins — Activity 1</h1>
+    <p>How does your sampling method affect your estimate?</p>
+    <div class="progress" id="progress"></div>
+  </header>
+  <nav id="tabs" aria-label="Activity tabs">
+    <button data-action="tab" data-tab="convenience" class="active">1. Convenience</button>
+    <button data-action="tab" data-tab="srs">2. Simple Random</button>
+    <button data-action="tab" data-tab="stratified">3. Stratified</button>
+    <button data-action="tab" data-tab="cluster">4. Cluster</button>
+    <button data-action="tab" data-tab="results">5. Results</button>
+  </nav>
+  <main id="app"></main>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const TRUE_TOTAL = 480;
+      const METHODS = ['convenience', 'srs', 'stratified', 'cluster'];
+      const state = { activeTab: 'convenience', estimates: {}, convenience: new Set(), convenienceCounts: [], srs: [], stratified: new Set(), clusterRow: null };
+      const gridData = Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => Math.floor(Math.random() * 5) + 3));
+      let total = gridData.flat().reduce((sum, value) => sum + value, 0);
+      while (total < TRUE_TOTAL) { const r = Math.floor(Math.random() * 10); const c = Math.floor(Math.random() * 10); if (gridData[r][c] < 7) { gridData[r][c]++; total++; } }
+      while (total > TRUE_TOTAL) { const r = Math.floor(Math.random() * 10); const c = Math.floor(Math.random() * 10); if (gridData[r][c] > 3) { gridData[r][c]--; total--; } }
+      if (total !== TRUE_TOTAL || gridData.flat().some(value => value < 3 || value > 7)) throw new Error('Grid total or bounds verification failed.');
+      const scatterPositions = gridData.map(row => row.map(cellCount => Array.from({ length: cellCount }, () => ({ x: 12 + Math.random() * 76, y: 12 + Math.random() * 76 }))));
+
+      function gridHTML(mode) {
+        const selected = new Set();
+        if (mode === 'convenience') state.convenience.forEach(key => selected.add(key));
+        if (mode === 'srs') state.srs.forEach(item => { if (item) selected.add(`${item.row}-${item.col}`); });
+        if (mode === 'stratified') state.stratified.forEach(key => selected.add(key));
+        const clusterClass = mode === 'cluster' && state.clusterRow ? `row-${state.clusterRow}` : '';
+        let html = '<div class="grid-wrap"><div class="helicopter">🚁</div><div class="grid-layout"><div class="corner"></div>';
+        for (let c = 1; c <= 10; c++) html += `<div class="label">${c}</div>`;
+        for (let r = 1; r <= 10; r++) { html += `<div class="label">${r}</div>`; for (let c = 1; c <= 10; c++) {
+          const key = `${r}-${c}`; const strata = mode === 'stratified' ? `stratum-${r}` : ''; const isSelected = selected.has(key); const isCluster = mode === 'cluster' && state.clusterRow === r;
+          html += `<div class="cell ${strata} ${isSelected ? (mode === 'convenience' || mode === 'stratified' ? 'selected' : 'srs-selected') : ''} ${isCluster ? 'cluster-selected' : ''} ${clusterClass}" data-action="cell" data-row="${r}" data-col="${c}" aria-label="Row ${r}, Column ${c}, ${gridData[r-1][c-1]} penguins">`;
+          scatterPositions[r-1][c-1].forEach(pos => { html += `<span class="penguin" style="left:${pos.x}%;top:${pos.y}%">🐧</span>`; }); html += '</div>'; }
+        }
+        return html + '</div></div></div>';
+      }
+      function estimateHTML(method, value) { return `<div class="estimate ${value !== null ? 'visible' : ''}" id="estimate-${method}">Estimate: ${value === null ? '' : value.toFixed(1)} penguins</div>`; }
+      function renderProgress() { document.getElementById('progress').innerHTML = ['Convenience','SRS','Stratified','Cluster'].map((name, i) => `<span class="${state.estimates[METHODS[i]] !== undefined ? 'done' : ''}">${state.estimates[METHODS[i]] !== undefined ? '✓ ' : ''}${name}</span>`).join(''); }
+      function render() { renderProgress(); document.querySelectorAll('#tabs button').forEach(button => button.classList.toggle('active', button.dataset.tab === state.activeTab)); const app = document.getElementById('app'); if (state.activeTab === 'convenience') renderConvenience(app); if (state.activeTab === 'srs') renderSRS(app); if (state.activeTab === 'stratified') renderStratified(app); if (state.activeTab === 'cluster') renderCluster(app); if (state.activeTab === 'results') renderResults(app); }
+      function renderConvenience(app) { const items = [...state.convenience].map(key => { const [r,c] = key.split('-').map(Number); return `<div class="result-item">Row ${r}, Column ${c} → 🐧 ${gridData[r-1][c-1]} penguins</div>`; }).join(''); const value = state.convenience.size === 10 ? state.convenienceCounts.reduce((a,b) => a+b,0) * 10 : null; if (value !== null) state.estimates.convenience = value; app.innerHTML = `<div class="panel"><h2>Convenience Sample</h2><div class="instructions">You arrived by helicopter 🚁 and landed near the top-right corner of the island. Choose 10 grid sections that are convenient for you to reach from that landing spot. Click each cell to select it — the penguin count will be recorded automatically. Once you've selected 10 cells, your estimate will appear.</div>${gridHTML('convenience')}<div class="status">${state.convenience.size} of 10 cells selected</div><div class="results-list">${items || '<span class="muted">Your selected cells will appear here.</span>'}</div>${estimateHTML('convenience', value)}</div>`; }
+      function renderSRS(app) { const items = state.srs.map(item => `<div class="result-item">Row ${item.row}, Column ${item.col} → 🐧 ${gridData[item.row-1][item.col-1]} penguins</div>`).join(''); const value = state.srs.length === 10 ? state.srs.reduce((sum,item) => sum + gridData[item.row-1][item.col-1], 0) / 10 * 100 : null; if (value !== null) state.estimates.srs = value; app.innerHTML = `<div class="panel"><h2>Simple Random Sample (SRS)</h2><div class="instructions"><strong>How to generate a random integer on your calculator:</strong><h3>TI-Nspire instructions:</h3><ol><li>Press the [home] button and open a Calculator scratchpad</li><li>Press [menu] → 5: Probability → 4: Random → 2: Integer</li><li>Type: randInt(1,10) and press [enter] — this gives your ROW</li><li>Press [enter] again (or repeat) to get your COLUMN</li><li>Navigate to that cell on the grid and click it</li></ol><h3>NumWorks instructions:</h3><ol><li>From the home screen, open the Calculation app</li><li>Type: randint(1,10) and press [OK] — this gives your ROW</li><li>Press [OK] again to get your COLUMN</li><li>Navigate to that cell on the grid and click it</li></ol><p>If you land on a cell you already selected, generate a new pair. Repeat until you have 10 unique cells.</p></div>${gridHTML('srs')}<div class="status">${state.srs.length} of 10 cells selected</div><div class="results-list">${items || '<span class="muted">Your selected cells will appear here.</span>'}</div>${estimateHTML('srs', value)}</div>`; }
+      function renderStratified(app) { const rowsSampled = new Set([...state.stratified].map(key => Number(key.split('-')[0]))); const value = rowsSampled.size === 10 ? [...state.stratified].reduce((sum,key) => { const [r,c] = key.split('-').map(Number); return sum + gridData[r-1][c-1]; }, 0) / 10 * 100 : null; if (value !== null) state.estimates.stratified = value; else delete state.estimates.stratified; const items = [...state.stratified].sort((a,b) => Number(a.split('-')[0]) - Number(b.split('-')[0])).map(key => { const [r,c] = key.split('-').map(Number); return `<div class="result-item">Row ${r}, Column ${c} → 🐧 ${gridData[r-1][c-1]} penguins</div>`; }).join(''); app.innerHTML = `<div class="panel"><h2>Stratified Random Sample</h2><div class="instructions">The grid is divided into 10 strata — one per row. For each stratum (row), use your calculator to randomly select one cell:<h3>TI-Nspire:</h3><p>Press [menu] → 5: Probability → 4: Random → 2: Integer, then type randInt(1,10) and press [enter] — this gives your COLUMN for that row.</p><h3>NumWorks:</h3><p>Open the Calculation app, type randint(1,10) and press [OK] — this gives your COLUMN for that row.</p><p>Find that cell in the row and click it. Repeat for all 10 rows. If you accidentally click the wrong cell, click it again to deselect it.</p></div>${gridHTML('stratified')}<div class="status">${rowsSampled.size} of 10 rows sampled</div><div class="results-list">${items || '<span class="muted">Your selected cells will appear here.</span>'}</div>${estimateHTML('stratified', value)}</div>`; }
+      function renderCluster(app) { const value = state.clusterRow ? gridData[state.clusterRow-1].reduce((a,b) => a+b,0) * 10 : null; if (value !== null) state.estimates.cluster = value; const summary = state.clusterRow ? `<table><thead><tr><th>Column</th>${gridData[state.clusterRow-1].map((_,i) => `<th>${i+1}</th>`).join('')}<th>Total</th></tr></thead><tbody><tr><td>🐧 Count</td>${gridData[state.clusterRow-1].map(n => `<td>${n}</td>`).join('')}<td><strong>${gridData[state.clusterRow-1].reduce((a,b) => a+b,0)}</strong></td></tr></tbody></table>` : ''; app.innerHTML = `<div class="panel"><h2>Cluster Sample</h2><div class="instructions">Each row of the grid is one cluster. Use your calculator to randomly select one cluster:<br>• Type randInt(1,10) to get your row number<br>• All penguins in that row are automatically counted — that is your entire sample.</div>${gridHTML('cluster')}<p><label for="cluster-row"><strong>Selected cluster row (1–10): </strong></label><input id="cluster-row" type="number" min="1" max="10" data-action="cluster-row" value="${state.clusterRow || ''}"></p>${summary}${estimateHTML('cluster', value)}</div>`; }
+      function renderResults(app) { app.innerHTML = `<div class="panel"><h2>Results</h2><table><thead><tr><th>Method</th><th>Your Estimate</th><th>True Total</th><th>Difference</th></tr></thead><tbody>${METHODS.map(method => { const estimate = state.estimates[method]; return `<tr><td>${method[0].toUpperCase()+method.slice(1)}</td><td>${estimate === undefined ? 'Not yet completed' : estimate.toFixed(1)}</td><td>${TRUE_TOTAL}</td><td>${estimate === undefined ? '—' : Math.abs(estimate-TRUE_TOTAL).toFixed(1)}</td></tr>`; }).join('')}</tbody></table><p><a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSeDbUpA95gNhkNeuELkwtGaEKj7FTv3_c7w2najUiHmItGtlA/viewform?usp=publish-editor" target="_blank" rel="noopener">Submit to Class Form</a></p><p><strong>Reflection:</strong> Which method gave you the closest estimate? Which gave the most surprising result? Be ready to discuss with your class.</p></div>`; }
+      function validNumber(input, min, max) { const value = Number(input.value); return Number.isInteger(value) && value >= min && value <= max; }
+      document.addEventListener('click', event => { const target = event.target.closest('[data-action]'); if(!target)return; const action=target.dataset.action; if(action==='tab'){state.activeTab=target.dataset.tab;render();} if(action==='cell'&&state.activeTab==='convenience'){const key=`${target.dataset.row}-${target.dataset.col}`; state.convenience.has(key)?state.convenience.delete(key):state.convenience.add(key); state.convenienceCounts=[...state.convenience].map(k=>{const [r,c]=k.split('-').map(Number);return gridData[r-1][c-1];}); if(state.convenience.size<10)delete state.estimates.convenience; render();} if(action==='cell'&&state.activeTab==='srs'){const row=Number(target.dataset.row),col=Number(target.dataset.col); const index=state.srs.findIndex(item=>item.row===row&&item.col===col); if(index>=0) state.srs.splice(index,1); else if(state.srs.length<10) state.srs.push({row,col}); if(state.srs.length<10) delete state.estimates.srs; render();} if(action==='cell'&&state.activeTab==='stratified'){const row=Number(target.dataset.row),col=Number(target.dataset.col),key=`${row}-${col}`; const existing=[...state.stratified].find(item => item.startsWith(`${row}-`)); if(existing===key) state.stratified.delete(key); else { if(existing) state.stratified.delete(existing); state.stratified.add(key); } render();} });
+      document.addEventListener('input', event => { if(event.target.dataset.action==='cluster-row'){state.clusterRow=validNumber(event.target,1,10)?Number(event.target.value):null; if(!state.clusterRow)delete state.estimates.cluster; render();} });
+      document.addEventListener('wheel', event => { if(event.target.matches('input[type="number"]')) event.preventDefault(); }, {passive:false});
+      render();
+    });
+  </script>
+</body>
+</html>
